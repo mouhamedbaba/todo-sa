@@ -1,4 +1,11 @@
-from flask import Flask, blueprints
+from flask import Flask
+
+from .config import AppConfig
 
 app = Flask(__name__)
-app.config.from_object('config')
+app.config.from_object(AppConfig)
+
+from app.todo.routes import todo_bp
+print(todo_bp)
+
+app.register_blueprint(todo_bp)
