@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
     <title>Todo App</title>
 </head>
-<body>
-{% block content %}
-  
-{% endblock content %}    
-kk
+<body class="h-screen bg-black sm:p-2">
+    <div class="max-w-md mx-auto h-full sm:rounded-[2.4rem] sm:border-[1rem] sm:shadow-2xl  overflow-y-auto overflow-x-hidden scrollbar-none">
+        {% block content %}
+          
+        {% endblock content %}    
+    </div>
 </body>
 </html>
