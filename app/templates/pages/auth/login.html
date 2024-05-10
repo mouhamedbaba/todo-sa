@@ -1,0 +1,24 @@
+{% extends "base.html" %} 
+
+{% block content %}
+
+<div class="h-full bg-slate-100 p-4 flex justify-center items-center flex-col gap-6">
+    {% if error %}
+    <div class="bg-red-500/30 text-red-600 p-4 w-full rounded-md">
+        <h3>{{ error }}</h3>
+    </div>
+    {% endif %}
+    <form action="{{ url_for('auth.login') }}" method="POST">
+        <div class="flex flex-col gap-2 mb-3 w-full">
+            <label for="username" class="text-sm font-medium">username</label>
+            <input type="text" name="username" id="username" class="input-field w-full p-4 outline-cyan-500 rounded-md" placeholder="username">
+        </div>
+        <div class="flex flex-col gap-2 mb-3">
+            <label for="password" class="text-sm font-medium">password</label>
+            <input type="password" name="password" id="password" class="input-field input-field w-full p-4 outline-cyan-500 rounded-md" placeholder="password">
+        </div>
+        <button type="submit" class="btn btn-primary w-full mt-4 bg-blue-500 inline-flex items-center justify-center text-white  py-4  rounded-md hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-500">Login</button>
+    </form>
+</div>
+  
+{% endblock content %}
