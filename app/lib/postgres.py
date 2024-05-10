@@ -77,7 +77,7 @@ class Postgres():
     
     def get_tasks(self, uid):
         try:
-            self.cursor.execute("SELECT * FROM tasks WHERE uuid = %s", (uid,))
+            self.cursor.execute("SELECT * FROM tasks WHERE uuid = %s ORDER BY created_at DESC", (uid,))
             rows = self.cursor.fetchall()
             if rows:
                 columns = [desc[0] for desc in self.cursor.description]
