@@ -1,17 +1,18 @@
 from os import getenv
 from dotenv import load_dotenv
-import psycopg2
+import mysql.connector
 import random
+import requests
 load_dotenv()
 
 
-class Postgres():
+class Mysql():
     def __init__(self):
-        self.conn = psycopg2.connect(
+        self.conn = mysql.connector.connect(
             host="localhost",
-            database="postgres",
-            user="postgres",
-            password=getenv('POSTGRES_PASSWORD'),
+            database="todolist",
+            user="mbl",
+            password=getenv('MYSQL_PASSWORD'),
         ) 
         self.cursor = self.conn.cursor()
         
@@ -19,8 +20,10 @@ class Postgres():
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 uid SERIAL PRIMARY KEY,
+                name VARCHAR(250),
                 username VARCHAR(255) UNIQUE NOT NULL,
-                password VARCHAR(255) NOT NULL,
+                email VARCHAR(250) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,     
                 created_at TIMESTAMP DEFAULT NOW()
             )
         """)
@@ -29,16 +32,11 @@ class Postgres():
                 id SERIAL PRIMARY KEY,
                 uuid INTEGER REFERENCES users(uid),
                 title VARCHAR(255) NOT NULL,
-                priority VARCHAR(255) NOT NULL,
-                head_color VARCHAR(255) NOT NULL,
                 completed BOOLEAN NOT NULL DEFAULT FALSE,
-                created_at TIMESTAMP DEFAULT NOW(),
-                deadline TIMESTAMP 
+                created_at TIMESTAMP DEFAULT NOW()
             )
         """)
         self.conn.commit()
-        
-    
     def create_user(self, username, password):
         try:
             self.cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password))
@@ -56,8 +54,10 @@ class Postgres():
         
     def get_user_by_username_and_password(self, username, password):
         try:
+            print(username, password)
             self.cursor.execute("SELECT * FROM users WHERE username = %s AND password = %s", (username, password))
             row = self.cursor.fetchone()
+            print("row : ", row)
             if row:
                 columns = [desc[0] for desc in self.cursor.description]
                 return dict(zip(columns, row))
@@ -106,10 +106,41 @@ class Postgres():
             print(e)
 
 
-postgres = Postgres()
-postgres.initdb()
-def add_random_tasks():
-    for i in range(10):
-        postgres.create_task(1, f'Task {i}', random.choice(['low', 'medium', 'high']), random.choice(['red', 'green', 'blue']), random.choice([True, False]))
+mysqldb = Mysql()
+mysqldb.initdb()
 
-# add_random_tasks()
+# # res = requests.get("https://jsonplaceholder.typicode.com/users")
+# res = requests.get("https://jsonplaceholder.typicode.com/todos")
+# # users = res.json()
+# todos = res.json()
+ 
+
+
+
+
+# print(len(users))
+# # for user in users :
+# #     print(user)
+# #     usename = user.get("username")
+# #     pw = f"{usename}pass".lower()
+# #     values = (user.get("id"), user.get("name"), usename, user.get("email"), pw)
+# #     mysqldb.cursor.execute("""
+# #     INSERT INTO users(uid, name, username, email, password) VALUES (%s, %s, %s, %s, %s)
+# # """, values)
+# #     mysqldb.conn.commit()
+# #     print(f"{usename} added")
+
+
+                # id SERIAL PRIMARY KEY,
+                # uuid INTEGER REFERENCES users(uid),
+                # title VARCHAR(255) NOT NULL,
+                # completed BOOLEAN NOT NULL DEFAULT FALSE,
+                # created_at TIMESTAMP DEFAULT NOW()
+
+# for todo in todos :
+#     values = (todo.get("id"), todo.get("userId"), todo.get("title"), todo.get("completed"))
+#     mysqldb.cursor.execute("""
+#     INSERT INTO tasks(id, uuid, title, completed) VALUES (%s, %s, %s, %s)
+# """, values)
+#     mysqldb.conn.commit()
+#     print(todo.get("title"), "added")   

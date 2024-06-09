@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consomation API</title>
+  <link rel="stylesheet" href="./public/assets/css/style.css">
+  <link
+	href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+	rel="stylesheet">
+
+  <script src="./public/assets/js/Jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- <script src="../src/app.js" defer></script> -->
+  <script src="./src/lib/auth.js" defer></script>
+  <script  src="./src/lib/flowbite.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js" defer></script>
+  <script src="./src/functions/toggleTheme.js" defer></script>
+  <script src="./src/templates/includes.js" defer></script>
+  <script>
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark')
+        document.documentElement.classList.add('light')
+    }
+</script>
+</head>
+
+<body class="px-4">
+  
+<div class="max-w-7xl mx-auto" id="root">
+</div>
+<div class="max-w-7xl mx-auto">
+<div class="flex items-center gap-4 justify-center">
+    <form class="mt-4 grow">
+        <div class="flex">
+            <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Your Email</label>
+            <button id="dropdown-button" data-dropdown-toggle="dropdown" class="flex-shrink-0 z-10 inline-flex items-center  px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" type="button">All categories <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+      </svg>
+        </button>
+            <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                <li>
+                    <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Mockups</button>
+                </li>
+                <li>
+                    <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Templates</button>
+                </li>
+                <li>
+                    <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Design</button>
+                </li>
+                <li>
+                    <button type="button" class="inline-flex w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Logos</button>
+                </li>
+                </ul>
+            </div>
+            <div class="relative w-full">
+                <input type="search" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required />
+                <button type="submit" class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg>
+                    <span class="sr-only">Search</span>
+                </button>
+            </div>
+        </div>
+    </form>
+    <div class="flex flex-row gap-2 justify-end items-end mt-2 p-0">
+        <button
+        onclick="getData()"
+          class="p-2  inline-flex  focus-within:bg-transparent focus-within:animate-spin focus-within:hover:bg-transparent nline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+        >
+        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-refresh-ccw w-5 h-5"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+        </button>
+        <div class="hidden sm:flex gap-0.5 py-0.5 px-1 border  rounded-md">
+          <button
+            class="relative p-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50  text-secondary-foreground shadow-sm hover:bg-secondary/80"
+          >
+           <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-grid w-5 h-5"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+          </button>
+          <button
+            class="relative p-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50  text-secondary-foreground shadow-sm hover:bg-secondary/80"
+          >
+          <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list w-5 h-5"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+</div>
+<div class="mt-8 pb-20">
+	<div class="w-full">
+		<div class="w-full ">
+			<table class="table text-gray-400 border-separate space-x-8  text-sm w-full">
+				<thead class="bg-gray-800 text-gray-500 rounded-lg">
+					<tr class=" rounded-lg">
+						<th class="p-3 rounded-l-lg">User</th>
+						<th class="p-3 text-left">Task</th>
+						<th class="p-3 text-left">Status</th>
+						<th class="p-3 text-left rounded-r-lg">Action</th>
+					</tr>
+				</thead>
+				<tbody id="task_tbody">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>
+        <script>
+            // $(document).ready(function () {
+            const square = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square"><rect width="18" height="18" x="3" y="3" rx="2"/></svg>`;
+            const squareCheck = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-check-big"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`;
+
+            $(document).on("click", ".toggle-completed", function (e) {
+        const completed = $(this).data("completed") === true;
+        const id = $(this).data("id");
+        console.log(`ID: ${id}, Completed: ${completed}`);
+        $(this).html(completed ? square : squareCheck);
+        $(this).data("completed", !completed);
+    });         
+
+            const getData = async () => {
+                try {
+                    const res = await axios.get("https://jsonplaceholder.typicode.com/todos");
+                    const data = await res.data;
+                    let users = []
+                    if (data) {
+                        data.forEach(async (todo) => {
+
+                            await axios.get(`https://jsonplaceholder.typicode.com/users/${todo.userId}`)
+                                .then(res => {
+                                    const user = res.data;
+                                    users.push(user)
+                                    const tr = document.createElement("tr");
+                                    tr.classList.add("bg-gray-800");
+                                    tr.innerHTML = `
+                                        <td class="p-3 rounded-l-md">
+                                            <div class="flex align-items-center">
+                                                <img class="rounded-full h-12 w-12  object-cover" src="https://images.unsplash.com/photo-1613588718956-c2e80305bf61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=634&q=80" alt="unsplash image">
+                                                <div class="ml-3">
+                                                    <div class="">${user?.name}</div>
+                                                    <div class="text-gray-500"> ${user?.email} </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-3">
+                                            ${todo?.title}
+                                        </td>
+                                        <td class="p-3">
+                                            <button class="toggle-completed"
+                                                data-id="${todo.id}"
+                                                data-completed="${todo.completed ? "true" : "false"}">
+                                                ${todo.completed ? squareCheck : square}
+                                            </button>
+                                        </td>
+                                        <td class="p-3 rounded-r-lg">
+                                            <a href="#" class="text-gray-400 hover:text-gray-100 mr-2">
+                                                <i class="material-icons-outlined text-base">visibility</i>
+                                            </a>
+                                            <a href="#" class="text-gray-400 hover:text-gray-100 mx-2">
+                                                <i class="material-icons-outlined text-base">edit</i>
+                                            </a>
+                                            <a href="#" class="text-gray-400 hover:text-gray-100 ml-2">
+                                                <i class="material-icons-round text-base">delete_outline</i>
+                                            </a>
+                                        </td>
+                                    `;
+                                    $("#task_tbody").append(tr);
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+                        });
+                        }
+                    console.table(data);
+                    console.table(users);
+
+                } catch (error) {
+                    console.log("une erreur s'est produite");
+                    console.error(error);
+                }
+            }
+            getData().then((val) => {});
+        // });
+
+        </script>
+</body>
+
+</html>

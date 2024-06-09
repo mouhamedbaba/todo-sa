@@ -4,4 +4,6 @@
 .env/
 nodes_modules
 node_modules/
-.DS_Store   
+.DS_Store  
+__pycache__
+.vscode 

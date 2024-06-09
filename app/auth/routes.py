@@ -1,15 +1,14 @@
 from flask import Blueprint, session,request, redirect, url_for, render_template
-from app.lib.postgres import Postgres
+from app.lib._mysql import Mysql
 auth_bp = Blueprint('auth', __name__)
 
-postges = Postgres()
+mysql = Mysql()
 
 @auth_bp.route('/login', methods=['GET', 'POST'], endpoint='login')
 def login():
     if request.method == 'POST':
         user = request.form.to_dict()
-        print(user)
-        user = postges.get_user_by_username_and_password(username=user['username'], password=user['password'])
+        user = mysql.get_user_by_username_and_password(username=user['username'], password=user['password'])
         if user:
             session['user'] = user
             return redirect(url_for('todolist.index'))
